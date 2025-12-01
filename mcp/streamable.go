@@ -1356,6 +1356,7 @@ func (c *streamableClientConn) sessionUpdated(state clientSessionState) {
 	// § 2.5: A server using the Streamable HTTP transport MAY assign a session
 	// ID at initialization time, by including it in an Mcp-Session-Id header
 	// on the HTTP response containing the InitializeResult.
+  fmt.Println("Async streamable"
 	go c.connectStandaloneSSE()
 }
 
