@@ -82,6 +82,8 @@ type ClientOptions struct {
 	// If the peer fails to respond to pings originating from the keepalive check,
 	// the session is automatically closed.
 	KeepAlive time.Duration
+	// Stateless clients do not open standalone SSE connections
+	Stateless bool
 }
 
 // bind implements the binder[*ClientSession] interface, so that Clients can
@@ -170,7 +172,9 @@ func (c *Client) Connect(ctx context.Context, t Transport, _ *ClientSessionOptio
 	}
 	cs.state.InitializeResult = res
 	if hc, ok := cs.mcpConn.(clientConnection); ok {
-		hc.sessionUpdated(cs.state)
+		if !c.opts.Stateless {
+			hc.sessionUpdated(cs.state)
+		}
 	}
 	req2 := &initializedClientRequest{Session: cs, Params: &InitializedParams{}}
 	if err := handleNotify(ctx, notificationInitialized, req2); err != nil {
